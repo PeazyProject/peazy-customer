@@ -1,4 +1,4 @@
-package com.peazy.customer.model.resp;
+package com.peazy.customer.model.response;
 
 import java.util.Date;
 
