@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CustomerApplication<peazy-customer>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.peazy.customer.CustomerApplication",
+            "projectName": "peazy-customer",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SupplierApplication<peazy-supplier>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.peazy.supplier.SupplierApplication",
+            "projectName": "peazy-supplier",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
