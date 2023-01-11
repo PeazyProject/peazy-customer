@@ -1,6 +1,7 @@
 package com.peazy.customer.model.bean;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -15,4 +16,6 @@ public class QueryProductBean {
     private Date createDt;
     private String productStatus;
     private int productQty;
+    private List<DropDownBean> colorList;
+    private List<DropDownBean> sizeList;
 }
