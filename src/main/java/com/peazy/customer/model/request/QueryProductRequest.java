@@ -8,6 +8,5 @@ import lombok.Data;
 public class QueryProductRequest {
     private String productName;
     private List<String> skuList;
-    private List<String> inStockList;
     private String isAvailable;
 }

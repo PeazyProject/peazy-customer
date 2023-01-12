@@ -11,6 +11,5 @@ public interface GetProductByFilterDto  {
 	String getSku();
 	Date getCreateDt();
 	String getProductStatus();
-	int getProductQty();
 	String getVendorSeqNo();
 }

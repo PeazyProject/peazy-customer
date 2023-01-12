@@ -15,7 +15,6 @@ public class QueryProductBean {
     private String sku;
     private Date createDt;
     private String productStatus;
-    private int productQty;
     private List<DropDownBean> colorList;
     private List<DropDownBean> sizeList;
 }

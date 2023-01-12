@@ -32,10 +32,6 @@ public class ProductServiceImpl implements ProductService {
 			queryProductRequest.setSkuList(null);
 		}
 
-		if (CollectionUtils.isEmpty(queryProductRequest.getInStockList())) {
-			queryProductRequest.setInStockList(null);
-		}
-
 		List<GetProductByFilterDto> supplierProductEntity = supplierProductRepository.queryProduct(
 				queryProductRequest.getProductName(), queryProductRequest.getSkuList(),
 				queryProductRequest.getIsAvailable());
@@ -53,15 +49,10 @@ public class ProductServiceImpl implements ProductService {
 			
 			// 先不要讓客戶看到商品是現貨還是需要預購
 			// queryProductBean.setProductStatus(getProductByFilterDto.getProductStatus());
-			queryProductBean.setProductQty(getProductByFilterDto.getProductQty());
-
 			queryProductBean.setColorList(getProductColorList(getProductByFilterDto.getProductSeqNo()));
 			queryProductBean.setSizeList(getProductSizeList(getProductByFilterDto.getProductSeqNo()));
 
-			if (isProductInStock(queryProductRequest.getInStockList(),
-					queryProductBean.getProductQty(), getProductByFilterDto.getProductStatus())) {
-				queryProductList.add(queryProductBean);
-			}
+			queryProductList.add(queryProductBean);
 		}
 
 		QueryProductResponse queryProductResponse = new QueryProductResponse();
