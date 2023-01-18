@@ -2,6 +2,8 @@ package com.peazy.customer.service.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +72,7 @@ public class ProductServiceImpl implements ProductService {
 			dropDownBean.setValue(getProductBySeqNoDto.getColorSeqNo());
 			colorList.add(dropDownBean);
 		}
+		colorList = colorList.stream().distinct().collect(Collectors.toList());
 		return colorList;
 	}
 
@@ -82,6 +85,7 @@ public class ProductServiceImpl implements ProductService {
 			dropDownBean.setValue(getProductBySeqNoDto.getSizeSeqNO());
 			sizeList.add(dropDownBean);
 		}
+		sizeList = sizeList.stream().distinct().collect(Collectors.toList());
 		return sizeList;
 	}
 
