@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.peazy.customer.model.request.AddShoppingCartRequest;
 import com.peazy.customer.model.request.QueryProductRequest;
 import com.peazy.customer.model.response.QueryProductResponse;
 import com.peazy.customer.service.interfaces.ProductService;
@@ -34,6 +35,14 @@ public class ProductController {
 		QueryProductResponse queryProductResponse = productService.queryCustomerProduct(queryProductRequest);
 		logger.info("queryCustomerProductResponse = {}", queryProductResponse);
 		return ResponseEntity.ok(queryProductResponse);
+	}
+
+	@PostMapping(value = "/addShoppingCart")
+	public ResponseEntity<Void> addShoppingCart(@RequestBody AddShoppingCartRequest qddShoppingCartRequest)
+			throws JsonProcessingException {
+		logger.info("addShoppingCart = {}", qddShoppingCartRequest);
+		productService.addShoppingCart(qddShoppingCartRequest);
+		return ResponseEntity.ok(null);
 	}
 
 }

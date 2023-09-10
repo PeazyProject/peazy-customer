@@ -1,6 +1,7 @@
 package com.peazy.customer.service.Impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -15,8 +16,11 @@ import com.peazy.customer.model.bean.DropDownBean;
 import com.peazy.customer.model.bean.QueryProductBean;
 import com.peazy.customer.model.dto.GetProductByFilterDto;
 import com.peazy.customer.model.dto.GetProductBySeqNoDto;
+import com.peazy.customer.model.entity.CustomerShoppingCartEntity;
+import com.peazy.customer.model.request.AddShoppingCartRequest;
 import com.peazy.customer.model.request.QueryProductRequest;
 import com.peazy.customer.model.response.QueryProductResponse;
+import com.peazy.customer.repository.CustomerShoppingCartRepository;
 import com.peazy.customer.repository.SupplierProductRepository;
 import com.peazy.customer.service.interfaces.ProductService;
 
@@ -25,6 +29,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private SupplierProductRepository supplierProductRepository;
+
+	@Autowired
+	private CustomerShoppingCartRepository customerShoppingCartRepository;
 
 	@Override
 	public QueryProductResponse queryCustomerProduct(QueryProductRequest queryProductRequest) throws JsonProcessingException {
@@ -108,6 +115,35 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		return false;
+	}
+
+	@Override
+	public void addShoppingCart(AddShoppingCartRequest addShoppingCartRequest) throws JsonProcessingException {
+
+		// 不判斷有無超過庫存數量，因超過可以等預購
+
+		CustomerShoppingCartEntity customerShoppingCartEntity = new CustomerShoppingCartEntity();
+		if (StringUtils.isNotBlank(addShoppingCartRequest.getProductSeqNo())) {
+			customerShoppingCartEntity.setProductSeqNo(Long.parseLong(addShoppingCartRequest.getProductSeqNo()));
+		}
+
+		if (StringUtils.isNotBlank(addShoppingCartRequest.getColorSeqNo())) {
+			customerShoppingCartEntity.setColorSeqNo(Long.parseLong(addShoppingCartRequest.getColorSeqNo()));
+		}
+
+		if (StringUtils.isNotBlank(addShoppingCartRequest.getSizeSeqNo())) {
+			customerShoppingCartEntity.setSizeSeqNo(Long.parseLong(addShoppingCartRequest.getSizeSeqNo()));
+		}
+		
+		customerShoppingCartEntity.setQty(addShoppingCartRequest.getProductQty());
+		customerShoppingCartEntity.setUserUUID(addShoppingCartRequest.getUserId());
+		customerShoppingCartEntity.setCreateUser(addShoppingCartRequest.getUserUUID());
+		customerShoppingCartEntity.setCreateDt(new Date());
+		customerShoppingCartEntity.setUpdateUser(addShoppingCartRequest.getUserUUID());
+		customerShoppingCartEntity.setUpdateDt(new Date());
+
+		customerShoppingCartRepository.save(customerShoppingCartEntity);
+
 	}
 
 }
