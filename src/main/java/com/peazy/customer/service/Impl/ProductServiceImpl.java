@@ -120,30 +120,58 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void addShoppingCart(AddShoppingCartRequest addShoppingCartRequest) throws JsonProcessingException {
 
-		// 不判斷有無超過庫存數量，因超過可以等預購
+		long productSeqNo = 0;
+		long colorSeqNo = 0;
+		long sizeSeqNo = 0;
 
-		CustomerShoppingCartEntity customerShoppingCartEntity = new CustomerShoppingCartEntity();
 		if (StringUtils.isNotBlank(addShoppingCartRequest.getProductSeqNo())) {
-			customerShoppingCartEntity.setProductSeqNo(Long.parseLong(addShoppingCartRequest.getProductSeqNo()));
-		}
+				productSeqNo = Long.parseLong(addShoppingCartRequest.getProductSeqNo());
+			}
 
-		if (StringUtils.isNotBlank(addShoppingCartRequest.getColorSeqNo())) {
-			customerShoppingCartEntity.setColorSeqNo(Long.parseLong(addShoppingCartRequest.getColorSeqNo()));
-		}
+			if (StringUtils.isNotBlank(addShoppingCartRequest.getColorSeqNo())) {
+				colorSeqNo = Long.parseLong(addShoppingCartRequest.getColorSeqNo());
+			}
 
-		if (StringUtils.isNotBlank(addShoppingCartRequest.getSizeSeqNo())) {
-			customerShoppingCartEntity.setSizeSeqNo(Long.parseLong(addShoppingCartRequest.getSizeSeqNo()));
-		}
+			if (StringUtils.isNotBlank(addShoppingCartRequest.getSizeSeqNo())) {
+				sizeSeqNo = Long.parseLong(addShoppingCartRequest.getSizeSeqNo());
+			}
+
+		// 不判斷有無超過庫存數量，因超過可以等預購
+		List<CustomerShoppingCartEntity> existedShippingCartProductList = 
+			customerShoppingCartRepository.findByProductSeqNoAndColorSeqNoAndSizeSeqNoAndUserUUID(
+			productSeqNo, 
+			colorSeqNo, 
+			sizeSeqNo, 
+			addShoppingCartRequest.getUserId());
 		
-		customerShoppingCartEntity.setQty(addShoppingCartRequest.getProductQty());
-		customerShoppingCartEntity.setUserUUID(addShoppingCartRequest.getUserId());
-		customerShoppingCartEntity.setCreateUser(addShoppingCartRequest.getUserUUID());
-		customerShoppingCartEntity.setCreateDt(new Date());
-		customerShoppingCartEntity.setUpdateUser(addShoppingCartRequest.getUserUUID());
-		customerShoppingCartEntity.setUpdateDt(new Date());
+		if (!CollectionUtils.isEmpty(existedShippingCartProductList)) {
+			CustomerShoppingCartEntity existedShippingCartProduct = new CustomerShoppingCartEntity();
 
-		customerShoppingCartRepository.save(customerShoppingCartEntity);
+			existedShippingCartProduct = existedShippingCartProductList.get(0);
+			existedShippingCartProduct.setQty(existedShippingCartProduct.getQty().add(
+				addShoppingCartRequest.getProductQty()));
+			existedShippingCartProduct.setUpdateUser(addShoppingCartRequest.getUserUUID());
+			existedShippingCartProduct.setUpdateDt(new Date());
+			customerShoppingCartRepository.save(existedShippingCartProduct);
 
+		} else {
+			addNewProductToShoppingCart(addShoppingCartRequest, productSeqNo, colorSeqNo, sizeSeqNo);
+		}
+	}
+
+	public void addNewProductToShoppingCart(AddShoppingCartRequest addShoppingCartRequest, long productSeqNo, long colorSeqNo, long sizeSeqNo) {
+		CustomerShoppingCartEntity customerShoppingCartEntity = new CustomerShoppingCartEntity();
+
+			customerShoppingCartEntity.setProductSeqNo(productSeqNo);
+			customerShoppingCartEntity.setColorSeqNo(colorSeqNo);
+			customerShoppingCartEntity.setSizeSeqNo(sizeSeqNo);
+			customerShoppingCartEntity.setUserUUID(addShoppingCartRequest.getUserId());
+			customerShoppingCartEntity.setQty(addShoppingCartRequest.getProductQty());
+			customerShoppingCartEntity.setCreateUser(addShoppingCartRequest.getUserUUID());
+			customerShoppingCartEntity.setCreateDt(new Date());
+			customerShoppingCartEntity.setUpdateUser(addShoppingCartRequest.getUserUUID());
+			customerShoppingCartEntity.setUpdateDt(new Date());
+			customerShoppingCartRepository.save(customerShoppingCartEntity);
 	}
 
 }
